@@ -69,12 +69,12 @@ def preprocess_data(data, target_column):
     # Separar características y objetivo
     X = data.drop(target_column, axis=1)
     y = data[target_column]
-    st.write(X.info())
-    st.write(X.isnull().sum())
+    
     # Normalizar características
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
-
+    st.write(X.info())
+    st.write(X.isnull().sum())
     return X_scaled, y
 
 # Interfaz de Streamlit
