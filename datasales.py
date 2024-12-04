@@ -75,32 +75,39 @@ if uploaded_file is not None:
             # Seleccionar solo las columnas numéricas para la normalización
             X_numeric = X.select_dtypes(include=[np.number])
 
-            # Verificar si las columnas son numéricas
-            if not np.all([np.issubdtype(X[col].dtype, np.number) for col in X.columns]):
-                st.error("Todas las columnas de características deben ser numéricas.")
-            else:
-                # Normalizar las características
-                st.write("### Normalizando los datos...")
-                scaler = StandardScaler()
-                X_scaled = scaler.fit_transform(X_numeric)
+            # Verificar si las columnas numéricas tienen valores no numéricos
+            for column in X_numeric.columns:
+                if not pd.to_numeric(X_numeric[column], errors='coerce').notnull().all():
+                    st.write(f"Columna {column} tiene valores no numéricos o inválidos.")
 
-                # Dividir datos en entrenamiento y prueba
-                X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+            # Convertir las columnas a numéricas (si no lo son)
+            X_numeric = X_numeric.apply(pd.to_numeric, errors='coerce')
 
-                # Entrenar y evaluar modelos
-                st.write("Entrenando modelos, por favor espera...")
-                results = train_and_evaluate_models(X_train, X_test, y_train, y_test)
+            # Imputar valores nulos con la media
+            X_numeric.fillna(X_numeric.mean(), inplace=True)
 
-                # Mostrar resultados
-                st.write("## Resultados de Regresión Lineal")
-                st.write(f"MAE: {results['linear']['mae']}")
-                st.write(f"RMSE: {results['linear']['rmse']}")
-                st.write(f"R²: {results['linear']['r2']}")
+            # Normalizar las características
+            st.write("### Normalizando los datos...")
+            scaler = StandardScaler()
+            X_scaled = scaler.fit_transform(X_numeric)
 
-                st.write("## Resultados de Árbol de Decisión")
-                st.write(f"MAE: {results['tree']['mae']}")
-                st.write(f"RMSE: {results['tree']['rmse']}")
-                st.write(f"R²: {results['tree']['r2']}")
+            # Dividir datos en entrenamiento y prueba
+            X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+
+            # Entrenar y evaluar modelos
+            st.write("Entrenando modelos, por favor espera...")
+            results = train_and_evaluate_models(X_train, X_test, y_train, y_test)
+
+            # Mostrar resultados
+            st.write("## Resultados de Regresión Lineal")
+            st.write(f"MAE: {results['linear']['mae']}")
+            st.write(f"RMSE: {results['linear']['rmse']}")
+            st.write(f"R²: {results['linear']['r2']}")
+
+            st.write("## Resultados de Árbol de Decisión")
+            st.write(f"MAE: {results['tree']['mae']}")
+            st.write(f"RMSE: {results['tree']['rmse']}")
+            st.write(f"R²: {results['tree']['r2']}")
 else:
     st.info("Por favor, sube un archivo CSV para comenzar.")
 
