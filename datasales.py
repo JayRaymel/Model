@@ -83,3 +83,7 @@ if uploaded_file is not None:
                 st.write(f"R²: {results['tree']['r2']}")
 else:
     st.info("Por favor, sube un archivo CSV para comenzar.")
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2f4da60 (Prueba del código)
