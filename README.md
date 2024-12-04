@@ -9,3 +9,6 @@
 |-- modes_trainig.py        # Módulo para el modelo predictivo de árbol de decisión
 |
 |-- README.md               # Archivo opcional para documentación del proyecto
+
+- **app.py**: Módulo principal que contiene la interfaz de usuario de Streamlit
+- **db_operations.py**: Módulo para operaciones CRUD con Supabase
